@@ -1,0 +1,21 @@
+{
+  "name": "bumblr",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "ts-node main.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gosuhiman/bumblr.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gosuhiman/bumblr/issues"
+  },
+  "homepage": "https://github.com/gosuhiman/bumblr#readme",
+  "dependencies": {
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  }
+}
