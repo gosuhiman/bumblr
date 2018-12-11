@@ -15,7 +15,9 @@
   },
   "homepage": "https://github.com/gosuhiman/bumblr#readme",
   "dependencies": {
+    "rxjs": "^6.3.3",
     "ts-node": "^7.0.1",
+    "tumblr.js": "^2.0.0",
     "typescript": "^3.2.2"
   }
 }
