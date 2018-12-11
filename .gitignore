@@ -1,6 +1,8 @@
 #IDE
 .idea
 secrets
+download/*
+!download/.gitkeep
 
 # Logs
 logs
