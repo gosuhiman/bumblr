@@ -17,6 +17,7 @@ const client: TumblrClient = createTumblrClient({
 type blogPostsFnType = (blogIdentifier: string, type: string, params: any, callback: TumblrClientCallback) => void;
 const blogPostsFn: blogPostsFnType = client.blogPosts;
 const blogPosts = bindNodeCallback(blogPostsFn);
+const imageRegExp: RegExp = /src="(https:\/\/.*?)"/gm;
 
 function downloadFile(sourceUrl: string, targetPath: string): Observable<string> {
   const stream: WriteStream = request(sourceUrl).pipe(fs.createWriteStream(targetPath));
@@ -36,11 +37,20 @@ function downloadBlogPart(blogName: string, params: any, alreadyDownloadedCount:
       response.posts.forEach((post => {
         if (post.photos) {
           post.photos.forEach((photo => {
-            const sourceUrl = photo.original_size.url;
+            const sourceUrl: string = photo.original_size.url;
+            const fileName: string = path.basename(sourceUrl);
+            const photoPath: string = path.join(blogPhotosPath, fileName);
+            downloads.push(downloadFile(sourceUrl, photoPath));
+          }));
+        }
+        if (post.type == 'text') {
+          let matches: string[];
+          while ((matches = imageRegExp.exec(post.body)) != null) {
+            let sourceUrl: string = matches[1];
             const fileName = path.basename(sourceUrl);
             const photoPath = path.join(blogPhotosPath, fileName);
             downloads.push(downloadFile(sourceUrl, photoPath));
-          }));
+          }
         }
       }));
       return combineLatest(downloads);
@@ -48,7 +58,7 @@ function downloadBlogPart(blogName: string, params: any, alreadyDownloadedCount:
     delay(1000),
     switchMap((downloadedFiles: string[]) => {
       alreadyDownloadedCount += downloadedFiles.length;
-      if (downloadedFiles.length >= params.limit) {
+      if (downloadedFiles.length > 0) {
         console.log('Downloaded', downloadedFiles.length, 'photos...');
         return downloadBlogPart(blogName, {
           limit: params.limit,
